@@ -76,11 +76,28 @@ const fetchPlayerResult = async (db, params) => {
   });
 }
 
-const fetchLeaderboard = (db, params) => {
+const fetchLeaderboard = async (db, params) => {
   const { gameId } = params;
 
-  return UserLog.getAllUsersLogs(db, gameId);
-
+  const data = await UserLog.getAllUsersLogs(db, gameId);
+  const gameDataList = await GameData.getAllGameData(db);
+  const groupGameDataByIndex = _.groupBy(gameDataList, 'index');
+  const groupByUsers = _.groupBy(data, 'username');
+  const result = _.map(groupByUsers, (username, list) => {
+    const correctAnswer = _.sumBy(list, each => each.answer === groupGameDataByIndex[each.index].answer);
+    const unAnswered = _.sumBy(list, each => each.answer === '');
+    const incorrectAnswer = 15 - correctAnswer - unAnswered;
+    const totalTimeTaken = _.sumBy(list, 'timeTaken');
+    return {
+      username,
+      correctAnswer,
+      unAnswered,
+      incorrectAnswer,
+      score: correctAnswer * 10,
+      totalTimeTaken,
+    }
+  });
+  return result;
 }
 
 module.exports = {
