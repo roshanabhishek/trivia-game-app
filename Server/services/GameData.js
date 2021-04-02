@@ -8,6 +8,13 @@ async function getData(db, index) {
   return Promise.resolve(data);
 }
 
+async function getAllGameData(db) {
+  const GameData = db.collection(collection);
+  const data = await GameData.findOne({obj});
+
+  return Promise.resolve(data);
+}
+
 module.exports = {
   getData,
 };
