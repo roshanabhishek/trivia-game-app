@@ -58,10 +58,22 @@ const updateAnswer = (db, params) => {
   return UserLog.create(db, params);
 }
 
-const fetchPlayerResult = (db, params) => {
+const fetchPlayerResult = async (db, params) => {
   const { gameId, username } = params;
 
-  return UserLog.getUserLogs(db, username, gameId);
+  const data = await UserLog.getUserLogs(db, username, gameId);
+  const gameDataList = await GameData.getAllGameData(db);
+  return data.map(each => {
+    const foundData = _.find(gameDataList, gameData => gameData.index === each.index);
+    const expectedAnswer = foundData.answer;
+    const actualAnswer = foundData.options[each.index - 1];
+    return {
+      question: foundData.question,
+      expectedAnswer,
+      actualAnswer,
+      score: expectedAnswer === actualAnswer ? 10 : 0
+    };
+  });
 }
 
 const fetchLeaderboard = (db, params) => {
