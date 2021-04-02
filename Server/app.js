@@ -9,7 +9,7 @@ var MongoClient = require('mongodb').MongoClient;
 var db;
 
 // Initialize connection once
-const uri = "mongodb+srv://roshanabhishek:sH95PNF%23b3dR@cluster0.sft2g.mongodb.net/gamestation?retryWrites=true&w=majority";
+const uri = "";
 MongoClient.connect(uri,
   { useNewUrlParser: true, useUnifiedTopology: true },
   function (err, client) {
