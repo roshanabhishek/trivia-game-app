@@ -10,11 +10,12 @@ async function getData(db, index) {
 
 async function getAllGameData(db) {
   const GameData = db.collection(collection);
-  const data = await GameData.findOne({obj});
+  const data = await GameData.find({}).toArray();
 
   return Promise.resolve(data);
 }
 
 module.exports = {
   getData,
+  getAllGameData,
 };
