@@ -51,49 +51,52 @@ app.use((err, req, res, next) => {
 */
 
 app.post('/data/register', (req, res, next) => {
-  const params = req.query;
+  const params = req.body;
   return CloudUtils.registerNewUser(db, params)
     .then(result => res.json(result))
     .catch(next);
 });
 
 app.post('/data/joinGame', (req, res, next) => {
-  const params = req.query;
+  const params = req.body;
   return CloudUtils.joinOrCreateGame(db, params)
     .then(result => res.json(result))
     .catch(next);
 });
 
-app.get('/data/fetchWaitingListPlayers', (req, res, next) => {
-  const params = req.query;
+app.post('/data/fetchWaitingListPlayers', (req, res, next) => {
+  const params = req.body;
   return CloudUtils.fetchWaitingListPlayers(db, params)
     .then(result => res.json(result))
     .catch(next);
 });
 
-app.get('/data/fetchQuestion', (req, res, next) => {
-  const params = req.query;
+app.post('/data/fetchQuestion', (req, res, next) => {
+  const params = req.body;
   return CloudUtils.fetchQuestion(db, params)
     .then(result => res.json(result))
     .catch(next);
 });
 
 app.post('/data/updateAnswer', (req, res, next) => {
-  const params = req.query;
+  const params = req.body;
+
   return CloudUtils.updateAnswer(db, params)
     .then(result => res.json(result))
     .catch(next);
 });
 
-app.get('/data/fetchPlayerResult', (req, res, next) => {
-  const params = req.query;
+app.post('/data/fetchPlayerResult', (req, res, next) => {
+  const params = req.body;
+
   return CloudUtils.fetchPlayerResult(db, params)
     .then(result => res.json(result))
     .catch(next);
 });
 
-app.get('/data/fetchLeaderboard', (req, res, next) => {
-  const params = req.query;
+app.post('/data/fetchLeaderboard', (req, res, next) => {
+  const params = req.body;
+
   return CloudUtils.fetchLeaderboard(db, params)
     .then(result => res.json(result))
     .catch(next);
