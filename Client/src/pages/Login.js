@@ -86,7 +86,7 @@ class Login extends Component {
               variant="contained"
               color="primary"
               className={classes.submit}
-              disabled={this.state.loading}
+              disabled={this.state.loading || this.state.username === ''}
             >
               Login
             </Button>

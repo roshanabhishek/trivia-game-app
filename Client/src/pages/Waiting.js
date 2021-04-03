@@ -47,9 +47,13 @@ class Waiting extends Component {
     if (!this.props.authenticated) {
       return <Redirect to={{ pathname: '/' }} />;
     }
-    
+
     if (this.props.gameState === 'started') {
       return <Redirect to={{ pathname: '/game' }} />;
+    }
+
+    if (this.props.gameState === 'not_started') {
+      return <Redirect to={{ pathname: '/join' }} />;
     }
 
     const { classes } = this.props;
