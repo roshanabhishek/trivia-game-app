@@ -43,10 +43,12 @@ const styles = (theme) => {
 };
 
 const rules = [
-  '1. Instructions',
-  '2. Please dont open new tab',
-  '3. Instructions 3',
-  '4. Dont use external tools for answer',
+  '1. Each game will have max of 10 players',
+  '2. Game starts as soon it waits for 60 seconds or 10 players joining the game',
+  '3. Game contains total of 15 questions',
+  '4. Each question will have time periods of 10 secs',
+  '5. There will be no negative points',
+  '6. Each players gets a score of 10 for correct answer',
 ]
 function RulesList(props) {
   return (
