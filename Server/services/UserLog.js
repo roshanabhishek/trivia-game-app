@@ -12,7 +12,7 @@ async function create(db, params) {
   const { username, gameId } = params;
   const answer = Number(params.answer);
   const timeTaken = Number(params.timeTaken);
-  const index = Number(params.timeTaken);
+  const index = Number(params.index);
   const obj = { gameId, createdAt, username, answer, timeTaken, index };
   const userlog = await UserLog.insertOne(obj);
   return Promise.resolve(getObject(userlog));
