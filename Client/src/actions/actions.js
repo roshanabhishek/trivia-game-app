@@ -31,7 +31,7 @@ export function joinGame(username) {
           type: 'JOINED_GAME',
           params: {
             gameId: data.gameId,
-            gameStarted: '',
+            gameStarted: data.createdAt,
           },
         });
       })
