@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import _ from 'lodash';
 
 import withStyles from '@material-ui/core/styles/withStyles';
 import {
@@ -24,17 +25,14 @@ const styles = (theme) => {
   };
 };
 
-function createData(id, name, timeTaken, totalScore) {
-  return { id, name, timeTaken, totalScore };
+function createData(id, name, correct, incorrect, unanswered, timeTaken, totalScore) {
+  return { id, name, correct, incorrect, unanswered, timeTaken, totalScore };
 }
 
-const data = [
-  createData(1, 'rosdjknfks', 23, 10),
-  createData(2, 'ujser 2', 26, 'sssss', 0),
-  createData(3, 'user 3', 30, 0),
-  createData(4, 'user 4', 30, 10),
-  createData(5, 'user 5', 65, 10),
-]
+const prepareData = (data) => {
+  return _.map(data, (each, index) => createData(index + 1, each.username, each.correct, each.incorrect, each.unanswered, each.timeTaken, each.score));
+}
+
 function TableComponent(props) {
   const { classes, data } = props
   return (
@@ -44,6 +42,9 @@ function TableComponent(props) {
           <TableRow>
             <TableCell>Rank</TableCell>
             <TableCell align="left">User Id</TableCell>
+            <TableCell align="center">Correct Answers</TableCell>
+            <TableCell align="center">Incorrect Answers</TableCell>
+            <TableCell align="center">Not Attempted</TableCell>
             <TableCell align="center">Time Taken&nbsp;(seconds)</TableCell>
             <TableCell align="center">Total Score</TableCell>
           </TableRow>
@@ -55,6 +56,9 @@ function TableComponent(props) {
                 {row.id}
               </TableCell>
               <TableCell align="left">{row.name}</TableCell>
+              <TableCell align="center">{row.correct}</TableCell>
+              <TableCell align="center">{row.incorrect}</TableCell>
+              <TableCell align="center">{row.unanswered}</TableCell>
               <TableCell align="center">{row.timeTaken}</TableCell>
               <TableCell align="center">{row.totalScore}</TableCell>
             </TableRow>
@@ -66,9 +70,12 @@ function TableComponent(props) {
 }
 
 class Leaderboard extends Component {
+  componentDidMount() {
+    this.props.fetchLeaderboard(this.props.gameId);
+  }
   render() {
-    const { classes } = this.props;
-
+    const { classes, leaderboard } = this.props;
+    const data = prepareData(leaderboard);
     return (
       <div style={{ height: 400, width: '100%' }}>
         <TableComponent
@@ -86,6 +93,8 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
+    gameId: state.game.gameId,
+    leaderboard: state.game.leaderboard,
   };
 }
 

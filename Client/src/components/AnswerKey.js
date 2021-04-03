@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { map } from 'lodash';
 
 import withStyles from '@material-ui/core/styles/withStyles';
 import {
   Paper,
   Button,
-  Typography,
 } from '@material-ui/core';
+import _ from 'lodash';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -32,33 +31,26 @@ const styles = (theme) => {
   };
 };
 
-function createData(id, question, acutal, expected, score) {
-  return { id, question, acutal, expected, score };
+function createData(id, question, actual, expected, score) {
+  return { id, question, actual, expected, score };
 }
 
-const data = [
-  createData(1, 'askjafkjdnakjdfnkajdfnkajdndfkjnjkdvsbak', 'a', 'a', 10),
-  createData(2, 'Ice cream sandwich', 'aaasaaa', 'sssss', 0),
-  createData(3, 'Eclair', 'a', 'b', 0),
-  createData(4, 'Cupcake', 'ffffff', 'fffff', 10),
-  createData(5, 'Gingerbread', 'adfaf', 'adadad', 10),
-  createData(5, 'Gingerbread', 'adfaf', 'adadad', 10),
-  createData(5, 'Gingerbread', 'adfaf', 'adadad', 10),
-  createData(5, 'Gingerbread', 'adfaf', 'adadad', 10),
-  createData(5, 'Gingerbread', 'adfaf', 'adadad', 10),
-  createData(5, 'Gingerbread', 'adfaf', 'adadad', 10),
-]
+const prepareData = (list) => {
+  return _.map(list, each => createData(each.index, each.question, each.actual, each.expected, each.score))
+}
+
 function TableComponent(props) {
   const { classes, data } = props
+  console.log('data', data);
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>id</TableCell>
-            <TableCell style={{ width: '20%' }} align="left">Question</TableCell>
-            <TableCell align="left">Actual</TableCell>
-            <TableCell align="left">Expected</TableCell>
+            <TableCell style={{ width: '30%' }} align="left">Question</TableCell>
+            <TableCell style={{ width: '30%' }} align="left">Actual</TableCell>
+            <TableCell style={{ width: '30%' }} align="left">Expected</TableCell>
             <TableCell align="center">Score</TableCell>
           </TableRow>
         </TableHead>
@@ -68,9 +60,9 @@ function TableComponent(props) {
               <TableCell component="th" scope="row">
                 {row.id}
               </TableCell>
-              <TableCell align="left">{row.question}</TableCell>
-              <TableCell align="left">{row.acutal}</TableCell>
-              <TableCell align="left">{row.expected}</TableCell>
+              <TableCell style={{ width: '30%' }} align="left">{row.question}</TableCell>
+              <TableCell style={{ width: '30%' }} align="left">{row.actual}</TableCell>
+              <TableCell style={{ width: '30%' }} align="left">{row.expected}</TableCell>
               <TableCell align="center">{row.score}</TableCell>
             </TableRow>
           ))}
@@ -82,15 +74,15 @@ function TableComponent(props) {
 
 class AnswerKey extends Component {
   render() {
-    const { classes } = this.props;
-
+    const { classes, playersResult } = this.props;
+    const data = prepareData(playersResult)
     return (
-      <div style={{ 
-        height: '100vh',
-         width: '100%', 
-         display: 'flex', 
-         flexDirection: 'column',
-          }}>
+      <div style={{
+        width: '100%',
+        display: 'flex',
+        flexGrow: 1,
+        flexDirection: 'column',
+      }}>
         <TableComponent
           classes={classes}
           data={data}
@@ -114,6 +106,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
+    playersResult: state.game.playersResult,
   };
 }
 

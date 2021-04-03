@@ -40,11 +40,11 @@ class Join extends Component {
   }
 
   handleLogout = () => {
-    // this.props.signOut();
+    this.props.signOut();
   };
 
   onClickJoin = () => {
-    this.props.joinGame();
+    this.props.joinGame(this.props.username);
   }
 
   render() {
@@ -85,6 +85,7 @@ function mapStateToProps(state) {
   return {
     authenticated: state.auth.authenticated,
     gameState: state.game.gameState,
+    username: state.auth.username,
   };
 }
 

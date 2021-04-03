@@ -6,7 +6,6 @@ import { map } from 'lodash';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {
   Paper,
-  Button,
   Typography,
 } from '@material-ui/core';
 
@@ -20,7 +19,7 @@ const styles = (theme) => {
       alignItems: 'center',
     },
     paper: {
-      width: 400,
+      width: 550,
       marginTop: theme.spacing.unit * 3,
     },
     headerContainer: {
@@ -43,6 +42,8 @@ const styles = (theme) => {
     optionContainer: {
       display: 'flex',
       alignItems: 'center',
+      marginTop: 4,
+      marginBottom: 4,
     },
     option: {
       paddingLeft: 5,
@@ -50,19 +51,8 @@ const styles = (theme) => {
   };
 };
 
-const options = [
-  'Option 1',
-  'Option 2',
-  'Option 3',
-  'Option 4',
-]
-const question = `What is the sdfnsdkjnkj skjdnfksjn
-sdjfnskjdfn ksjdfnksjdfnksjd kjndkfjnskdjf kjndkfjnskdjf
-sdlkfnslkfn lskdnflksdnlks sdlfnkksndlksndfk lskdnflksdnlks
-skdflskdn sdklnsdlknflskdnf`;
-
 function RulesList(props) {
-  const { question, options } = props;
+  const { question, options, index, totalQuestion } = props.questionData;
   return (
     <div className={props.classes.tabContainer}>
       <div className={props.classes.headerContainer}>
@@ -71,7 +61,7 @@ function RulesList(props) {
           variant="h5"
           className={props.classes.title}
         >
-          3 out of 15
+          {index} out of {totalQuestion}
         </Typography>
         <Typography
           component="h1"
@@ -89,14 +79,14 @@ function RulesList(props) {
         {question}
       </Typography>
       {
-        map(options, each => {
-          return <div key={each} className={props.classes.optionContainer}>
+        map(options, (each, index) => {
+          return <div key={each} className={props.classes.optionContainer} onClick={() => props.onChange(index + 1)}>
             <input
               type="radio"
               value={each}
               name="option"
               defaultChecked={each === "MALE"}
-              onChange={props.onChange}
+              onChange={() => props.onChange(index + 1)}
             />
             <Typography
               component="h1"
@@ -108,7 +98,7 @@ function RulesList(props) {
           </div>;
         })
       }
-      <Button
+      {/* <Button
         type="submit"
         fullWidth
         variant="contained"
@@ -118,7 +108,7 @@ function RulesList(props) {
         disabled={props.option === ''}
       >
         Submit
-      </Button>
+      </Button> */}
     </div>
   );
 }
@@ -127,34 +117,48 @@ class GameComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      option: '',
-      timer: 30,
+      option: 0,
+      timer: 10,
+      timeTaken: 0,
     }
   }
 
   componentDidMount() {
     this.updateTime();
+    const { username, gameId } = this.props;
+    this.props.fetchPlayerResult({ username, gameId });
   }
 
   componentWillUnmount() {
     clearInterval(this.setTimer);
   }
 
-  updateState = (key, value) => {
-    this.setState({ [key]: value });
+  onOptionChange = (value) => {
+    this.setState((prevState) => {
+      const option = value;
+      const timeTaken = 10 - prevState.timer;
+      return { option, timeTaken };
+    })
   }
 
-  onOptionChange = (event) => {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-
-    this.updateState(name, value)
-  }
   updateTime = () => {
     this.setTimer = setInterval(() => {
-      if (this.state.timer === 0) {
+      const { username, gameId } = this.props;
+      if (this.props.index === 15 && this.state.timer === 0) {
         clearInterval(this.setTimer);
+        this.props.fetchPlayerResult({ username, gameId });
+      }
+      else if (this.state.timer === 0) {
+        const params = {
+          username,
+          gameId,
+          index: this.props.index,
+          answer: this.state.option,
+          timeTaken: this.state.timeTaken,
+        }
+        this.props.updateAnswer(params);
+        this.setState({ option: 0, timer: 10, timeTaken: 0 })
+        this.props.fetchQuestion(this.props.index + 1);
       } else {
         this.setState((prevState) => {
           return { timer: prevState.timer - 1 };
@@ -164,15 +168,14 @@ class GameComponent extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, questionData } = this.props;
     return (
       <div className={classes.container}>
         <Paper className={classes.paper}>
           <RulesList
             classes={classes}
             timer={this.state.timer}
-            question={question}
-            options={options}
+            questionData={questionData}
             option={this.state.option}
             onChange={this.onOptionChange}
           />
@@ -188,6 +191,10 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
+    questionData: state.game.questionData,
+    gameId: state.game.gameId,
+    index: state.game.index,
+    username: state.auth.username,
   };
 }
 

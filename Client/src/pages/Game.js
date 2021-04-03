@@ -2,13 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Redirect, withRouter } from 'react-router-dom';
-import { } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { withStyles } from '@material-ui/core/styles';
-import {
-  Button,
-  CssBaseline,
-} from '@material-ui/core';
+import { CssBaseline } from '@material-ui/core';
 
 import Navbar from '../components/Navbar';
 import GameComponent from '../components/GameComponent';
@@ -37,13 +34,12 @@ class Game extends Component {
   constructor() {
     super();
     this.state = {
-      open: true,
-      isComplete: true,
+      isComplete: false,
     };
   }
 
   handleLogout = () => {
-    // this.props.signOut();
+    this.props.signOut()
   };
 
   render() {
@@ -70,9 +66,9 @@ class Game extends Component {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           {
-            this.state.isComplete ?
-              <AnswerKey /> :
-              <GameComponent onClickJoin={this.onClickJoin} />
+            isEmpty(this.props.playersResult) ?
+              <GameComponent /> :
+              <AnswerKey />
           }
         </main>
       </div>
@@ -88,6 +84,8 @@ function mapStateToProps(state) {
   return {
     authenticated: state.auth.authenticated,
     gameState: state.game.gameState,
+    index: state.game.index,
+    playersResult: state.game.playersResult,
   };
 }
 

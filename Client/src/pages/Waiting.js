@@ -40,12 +40,8 @@ class Waiting extends Component {
   }
 
   handleLogout = () => {
-    // this.props.signOut();
+    this.props.signOut();
   };
-
-  onClickJoin = () => {
-    this.props.joinGame();
-  }
 
   render() {
     if (!this.props.authenticated) {

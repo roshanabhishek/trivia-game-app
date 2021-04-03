@@ -10,7 +10,6 @@ import {
 } from '@material-ui/core';
 
 import Navbar from '../components/Navbar';
-import GameComponent from '../components/GameComponent';
 
 import ActionCreators from '../actions';
 import Leaderboard from '../components/Leaderboard';
@@ -41,7 +40,7 @@ class Result extends Component {
   }
 
   handleLogout = () => {
-    // this.props.signOut();
+    this.props.signOut();
   };
 
   render() {

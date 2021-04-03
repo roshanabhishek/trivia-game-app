@@ -104,7 +104,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-  console.log('sssssssss', state.auth, state.auth.authenticated);
   return {
     authenticated: state.auth.authenticated,
     gameState: state.game.gameState,

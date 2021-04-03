@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { map } from 'lodash';
+import moment from 'moment';
 
 import withStyles from '@material-ui/core/styles/withStyles';
 import {
+  Button,
   Paper,
   Typography,
 } from '@material-ui/core';
@@ -32,6 +34,8 @@ const styles = (theme) => {
     },
     submit: {
       marginTop: theme.spacing.unit * 3,
+      width: '30vh',
+      alignSelf: 'flex-end',
     },
     title: {
       display: 'flex',
@@ -44,15 +48,8 @@ const styles = (theme) => {
   };
 };
 
-const users = [
-  '1. Roshan',
-  '2. Abhishek',
-  '3. DUmmy Name',
-  '4. Dummy Name',
-  '5. Dummy Value',
-  '6. Second Name',
-]
 function RulesList(props) {
+  const { users } = props;
   return (
     <div className={props.classes.tabContainer}>
       <div className={props.classes.headerContainer}>
@@ -70,8 +67,8 @@ function RulesList(props) {
         </Typography>
       </div>
       {
-        map(users, each => {
-          return <div key={each}>{each}</div>;
+        map(users, (each, index) => {
+          return <div key={each}>{`${index + 1}.${each.username}`}</div>;
         })
       }
     </div>
@@ -81,13 +78,17 @@ function RulesList(props) {
 class WaitingComponent extends Component {
   constructor(props) {
     super(props);
+    const startTime = moment(props.createdAt);
+    const currentTime = moment();
+    const time = currentTime.diff(startTime, 'seconds');
     this.state = {
-      time: 10,
+      time,
     }
   }
 
   componentDidMount() {
-    this.updateTime();
+    // this.updateTime();
+    this.props.fetchQuestion(1);
   }
 
   componentWillUnmount() {
@@ -96,10 +97,12 @@ class WaitingComponent extends Component {
 
   updateTime = () => {
     this.setTimer = setInterval(() => {
-      if (this.state.time === 0) {
+      const { gameId, players } = this.props;
+      if (this.state.time === 0 || (players && players.length === 10)) {
         this.props.startGame();
         clearInterval(this.setTimer);
       } else {
+        this.props.fetchWaitingListPlayers(gameId);
         this.setState((prevState) => {
           return { time: prevState.time - 1 };
         });
@@ -108,8 +111,8 @@ class WaitingComponent extends Component {
   }
 
   render() {
-    
-    const { classes } = this.props;
+
+    const { classes, players } = this.props;
 
     return (
       <div className={classes.container}>
@@ -117,7 +120,16 @@ class WaitingComponent extends Component {
           <RulesList
             classes={classes}
             time={this.state.time}
+            users={players || []}
           />
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={() => this.props.leaveGame()}
+          >
+            Leave Game
+      </Button>
         </Paper>
       </div>
     );
@@ -130,6 +142,8 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
+    gameId: state.game.gameId,
+    players: state.game.players,
   };
 }
 
