@@ -9,8 +9,11 @@ const getObject = (obj) => {
 async function create(db, params) {
   const UserLog = db.collection(collection);
   const createdAt = moment().toDate();
-  const { username, gameId, answer, timeTaken, index } = params;
-  const obj = { gameId, createdAt, username, answer, timeTaken };
+  const { username, gameId } = params;
+  const answer = Number(params.answer);
+  const timeTaken = Number(params.timeTaken);
+  const index = Number(params.timeTaken);
+  const obj = { gameId, createdAt, username, answer, timeTaken, index };
   const userlog = await UserLog.insertOne(obj);
   return Promise.resolve(getObject(userlog));
 }
