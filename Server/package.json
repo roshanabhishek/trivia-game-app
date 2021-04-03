@@ -3,17 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "node server.js",
+    "start": "npm run build && node ./dist/server.js",
     "start-dev": "nodemon server.js --exec babel-node --presets env",
     "release": "npm run clean && npm run build && npm run serve",
     "clean": "rm -rf dist && mkdir dist",
-    "build": "babel . -s -D -d dist --presets env --ignore node_modules",
+    "build-babel": "babel -d ./dist ./ -s --ignore node_modules",
+    "build": "npm run clean && npm run build-babel",
     "serve": "node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel-plugin-transform-runtime": "^6.23.0",
     "express": "^4.17.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
