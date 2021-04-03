@@ -8,7 +8,7 @@
     "release": "npm run clean && npm run build && npm run serve",
     "clean": "rm -rf dist && mkdir dist",
     "build-babel": "babel -d ./dist ./ -s --ignore node_modules",
-    "build": "npm run clean && npm run build-babel",
+    "build": "npm run clean && npm install && npm run build-babel",
     "serve": "node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
