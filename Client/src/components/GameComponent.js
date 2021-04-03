@@ -42,8 +42,8 @@ const styles = (theme) => {
     optionContainer: {
       display: 'flex',
       alignItems: 'center',
-      marginTop: 4,
-      marginBottom: 4,
+      marginTop: 8,
+      marginBottom: 8,
     },
     option: {
       paddingLeft: 5,
@@ -93,7 +93,7 @@ function RulesList(props) {
               variant="h5"
               className={props.classes.option}
             >
-              {each}
+              {index + 1}. {each}
             </Typography>
           </div>;
         })
@@ -144,11 +144,7 @@ class GameComponent extends Component {
   updateTime = () => {
     this.setTimer = setInterval(() => {
       const { username, gameId } = this.props;
-      if (this.props.index === 15 && this.state.timer === 0) {
-        clearInterval(this.setTimer);
-        this.props.fetchPlayerResult({ username, gameId });
-      }
-      else if (this.state.timer === 0) {
+      if (this.state.timer === 0) {
         const params = {
           username,
           gameId,
@@ -158,7 +154,12 @@ class GameComponent extends Component {
         }
         this.props.updateAnswer(params);
         this.setState({ option: 0, timer: 10, timeTaken: 0 })
-        this.props.fetchQuestion(this.props.index + 1);
+        if (this.props.index === 15) {
+          this.props.fetchPlayerResult({ username, gameId });
+          clearInterval(this.setTimer);
+        } else {
+          this.props.fetchQuestion(this.props.index + 1);
+        }
       } else {
         this.setState((prevState) => {
           return { timer: prevState.timer - 1 };

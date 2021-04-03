@@ -19,27 +19,33 @@ const styles = (theme) => {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
+      padding: theme.spacing.unit * 3,
     },
     headerContainer: {
       display: 'flex',
-      justifyContent: 'space-evenly',
+      width: 400,
+      justifyContent: 'center',
       alignItems: 'center',
     },
     paper: {
       width: 400,
-      marginTop: theme.spacing.unit * 3,
+      padding: theme.spacing.unit * 3,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     tabContainer: {
       padding: theme.spacing.unit * 3,
     },
     submit: {
-      marginTop: theme.spacing.unit * 3,
+      margin: theme.spacing.unit * 3,
       width: '30vh',
-      alignSelf: 'flex-end',
+      alignSelf: 'center',
     },
     title: {
-      display: 'flex',
       alignItems: 'flex-end',
+      paddingLeft: 100,
     },
     timeTitle: {
       display: 'flex',
@@ -68,7 +74,7 @@ function RulesList(props) {
       </div>
       {
         map(users, (each, index) => {
-          return <div key={each}>{`${index + 1}.${each.username}`}</div>;
+          return <div className={props.classes.tabContainer} key={each}>{`${index + 1}. ${each.username}`}</div>;
         })
       }
     </div>
@@ -78,16 +84,19 @@ function RulesList(props) {
 class WaitingComponent extends Component {
   constructor(props) {
     super(props);
-    const startTime = moment(props.createdAt);
+    const startTime = moment(props.gameStarted);
     const currentTime = moment();
-    const time = currentTime.diff(startTime, 'seconds');
+    let timeDiff = currentTime.diff(startTime, 'seconds');
+    console.log('-----', props.gameStarted, currentTime, startTime, timeDiff);
+
+    timeDiff = 60 > timeDiff ? (60 - timeDiff) : 0;
     this.state = {
-      time,
+      time: timeDiff,
     }
   }
 
   componentDidMount() {
-    // this.updateTime();
+    this.updateTime();
     this.props.fetchQuestion(1);
   }
 
@@ -144,6 +153,7 @@ function mapStateToProps(state) {
   return {
     gameId: state.game.gameId,
     players: state.game.players,
+    gameStarted: state.game.gameStarted,
   };
 }
 

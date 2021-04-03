@@ -45,11 +45,11 @@ export function gameReducer(state = getInitialGameState(), action) {
       return assign({}, state, {
         gameState: 'waiting',
         gameId: action.params.gameId,
-        gameStarted: action.params.createdAt,
+        gameStarted: action.params.gameStarted,
       });
     case 'LEFT_GAME':
       return assign({}, state, {
-        gameState: 'started',
+        gameState: 'not_started',
         gameId: '',
       });
     case 'FETCHED_WAITING_LIST_PLAYERS':
