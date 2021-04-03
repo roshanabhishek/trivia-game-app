@@ -1,3 +1,5 @@
+import _, { each } from 'lodash';
+
 import Game from '../services/Game';
 import GameLog from '../services/GameLog';
 import User from '../services/User';
@@ -63,17 +65,25 @@ const fetchPlayerResult = async (db, params) => {
 
   const data = await UserLog.getUserLogs(db, username, gameId);
   const gameDataList = await GameData.getAllGameData(db);
-  return data.map(each => {
-    const foundData = _.find(gameDataList, gameData => gameData.index === each.index);
-    const expectedAnswer = foundData.answer;
-    const actualAnswer = foundData.options[each.index - 1];
+
+  const res = _.map(data, each => {
+    const currentIndex = each.index;
+    const actualAnswerIndex = each.answer;
+    const foundData = _.find(gameDataList, gameData => gameData.index === currentIndex);
+    const expectedAnswerIndex = foundData.answer
+
+    const expectedAnswer = (expectedAnswerIndex >= 1 && expectedAnswerIndex <= 4) ? foundData.options[expectedAnswerIndex - 1] : '';
+    const actualAnswer = (actualAnswerIndex >= 1 && actualAnswerIndex <= 4) ? foundData.options[actualAnswerIndex - 1] : '';
     return {
+      index: currentIndex,
       question: foundData.question,
       expectedAnswer,
       actualAnswer,
       score: expectedAnswer === actualAnswer ? 10 : 0
     };
   });
+
+  return _.sortBy(res, ['index']);
 }
 
 const fetchLeaderboard = async (db, params) => {
@@ -83,10 +93,11 @@ const fetchLeaderboard = async (db, params) => {
   const gameDataList = await GameData.getAllGameData(db);
   const groupGameDataByIndex = _.groupBy(gameDataList, 'index');
   const groupByUsers = _.groupBy(data, 'username');
-  const result = _.map(groupByUsers, (username, list) => {
-    const correctAnswer = _.sumBy(list, each => each.answer === groupGameDataByIndex[each.index].answer);
-    const unAnswered = _.sumBy(list, each => each.answer === '');
-    const incorrectAnswer = 15 - correctAnswer - unAnswered;
+
+  const result = _.map(groupByUsers, (list, username) => {
+    const correctAnswer = _.sumBy(list, each => each.answer === groupGameDataByIndex[String(each.index)][0].answer);
+    const unAnswered = _.sumBy(list, each => each.answer === 0);
+    const incorrectAnswer = _.size(list) - correctAnswer - unAnswered;
     const totalTimeTaken = _.sumBy(list, 'timeTaken');
     return {
       username,
@@ -97,7 +108,7 @@ const fetchLeaderboard = async (db, params) => {
       totalTimeTaken,
     }
   });
-  return result;
+  return _.sortBy(result, ['score', 'totalTimeTaken'], ['asc', 'desc']);
 }
 
 module.exports = {
