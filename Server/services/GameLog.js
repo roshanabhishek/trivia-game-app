@@ -18,15 +18,8 @@ async function findOrCreate(db, params) {
 
 async function find(db, params) {
   const GameLog = db.collection(collection);
-  const createdAt = moment().toDate();
-  const { username, gameId } = params;
-  const obj = { gameId, createdAt, username };
   const found = await GameLog.findOne(params);
-  if (found) {
-    return Promise.resolve(getObject(found));
-  }
-  const gamelog = await GameLog.insertOne(obj);
-  return Promise.resolve(getObject(gamelog));
+  return Promise.resolve(found);
 }
 
 async function create(db, params) {
