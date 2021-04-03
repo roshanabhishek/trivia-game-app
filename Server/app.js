@@ -48,49 +48,49 @@ app.use((err, req, res, next) => {
 * Register the routes
 */
 
-app.post('/register', (req, res, next) => {
+app.post('/data/register', (req, res, next) => {
   const params = req.query;
   return CloudUtils.registerNewUser(db, params)
     .then(result => res.json(result))
     .catch(next);
 });
 
-app.post('/joinGame', (req, res, next) => {
+app.post('/data/joinGame', (req, res, next) => {
   const params = req.query;
   return CloudUtils.joinOrCreateGame(db, params)
     .then(result => res.json(result))
     .catch(next);
 });
 
-app.get('/fetchWaitingListPlayers', (req, res, next) => {
+app.get('/data/fetchWaitingListPlayers', (req, res, next) => {
   const params = req.query;
   return CloudUtils.fetchWaitingListPlayers(db, params)
     .then(result => res.json(result))
     .catch(next);
 });
 
-app.get('/fetchQuestion', (req, res, next) => {
+app.get('/data/fetchQuestion', (req, res, next) => {
   const params = req.query;
   return CloudUtils.fetchQuestion(db, params)
     .then(result => res.json(result))
     .catch(next);
 });
 
-app.post('/updateAnswer', (req, res, next) => {
+app.post('/data/updateAnswer', (req, res, next) => {
   const params = req.query;
   return CloudUtils.updateAnswer(db, params)
     .then(result => res.json(result))
     .catch(next);
 });
 
-app.get('/fetchPlayerResult', (req, res, next) => {
+app.get('/data/fetchPlayerResult', (req, res, next) => {
   const params = req.query;
   return CloudUtils.fetchPlayerResult(db, params)
     .then(result => res.json(result))
     .catch(next);
 });
 
-app.get('/fetchLeaderboard', (req, res, next) => {
+app.get('/data/fetchLeaderboard', (req, res, next) => {
   const params = req.query;
   return CloudUtils.fetchLeaderboard(db, params)
     .then(result => res.json(result))
