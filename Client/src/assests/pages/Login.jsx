@@ -16,6 +16,7 @@ const styles = (theme) => {
       height: "50vh",
       display: "flex",
       flexDirection: "column",
+      justifyContent: "space-between",
       alignItems: 'center',
       padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
     },
@@ -25,7 +26,11 @@ const styles = (theme) => {
     },
     form: {
       width: '100%',
-      marginTop: theme.spacing.unit,
+      flex: 1,
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-evenly",
+      alignItems: 'center',
     },
     submit: {
       marginTop: theme.spacing.unit * 3,
