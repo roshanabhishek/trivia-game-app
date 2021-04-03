@@ -65,7 +65,7 @@ class Login extends Component {
         {/* SIGN-IN AREA */}
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h5">
-            Game Login
+            Trivia Game Login
           </Typography>
           <form className={classes.form} onSubmit={this.handleSubmit}>
             <FormControl margin="normal" required fullWidth>
