@@ -9,8 +9,8 @@ import GameData from '../services/GameData';
 const joinOrCreateGame = async (db, params) => {
   const createGame = async (username) => {
     const gameRes = await Game.create(db);
-    const gameLog = GameLog.create(db, { username, gameId: gameRes.gameId });
-    return Promise.resolve(gameLog);
+    await GameLog.create(db, { username, gameId: gameRes.gameId });
+    return { gameId: gameRes.gameId, createdAt: gameRes.createdAt };
   }
 
   const { username } = params;
@@ -23,8 +23,8 @@ const joinOrCreateGame = async (db, params) => {
   const gameLogSize = await GameLog.getGamePlayerSize(db, gameId);
 
   if (gameLogSize < 10) {
-    const gameLog = GameLog.create(db, { username, gameId });
-    return Promise.resolve(gameLog);
+    await GameLog.findOrCreate(db, { username, gameId });
+    return { gameId, createdAt: game.createdAt };
   }
 
   return createGame(username);
@@ -77,8 +77,8 @@ const fetchPlayerResult = async (db, params) => {
     return {
       index: currentIndex,
       question: foundData.question,
-      expectedAnswer,
-      actualAnswer,
+      expected: expectedAnswer,
+      actual: actualAnswer,
       score: expectedAnswer === actualAnswer ? 10 : 0
     };
   });
@@ -96,16 +96,16 @@ const fetchLeaderboard = async (db, params) => {
 
   const result = _.map(groupByUsers, (list, username) => {
     const correctAnswer = _.sumBy(list, each => each.answer === groupGameDataByIndex[String(each.index)][0].answer);
-    const unAnswered = _.sumBy(list, each => each.answer === 0);
-    const incorrectAnswer = _.size(list) - correctAnswer - unAnswered;
-    const totalTimeTaken = _.sumBy(list, 'timeTaken');
+    const unanswered = _.sumBy(list, each => each.answer === 0);
+    const incorrectAnswer = _.size(list) - correctAnswer - unanswered;
+    const timeTaken = _.sumBy(list, 'timeTaken');
     return {
       username,
-      correctAnswer,
-      unAnswered,
-      incorrectAnswer,
+      correct: correctAnswer,
+      unanswered,
+      incorrect: incorrectAnswer,
       score: correctAnswer * 10,
-      totalTimeTaken,
+      timeTaken,
     }
   });
   return _.sortBy(result, ['score', 'totalTimeTaken'], ['asc', 'desc']);
