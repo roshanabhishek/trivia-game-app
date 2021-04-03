@@ -1,10 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 import CloudUtils from './cloud/cloud_utils';
 
 const app = express();
 
+app.use(cors());
 var MongoClient = require('mongodb').MongoClient;
 var db;
 
