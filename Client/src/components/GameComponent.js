@@ -153,12 +153,12 @@ class GameComponent extends Component {
           timeTaken: this.state.timeTaken,
         }
         this.props.updateAnswer(params);
-        this.setState({ option: 0, timer: 10, timeTaken: 0 })
         if (this.props.index === 15) {
-          this.props.fetchPlayerResult({ username, gameId });
+          setTimeout(this.props.fetchPlayerResult({ username, gameId }), 5000);
           clearInterval(this.setTimer);
         } else {
-          this.props.fetchQuestion(this.props.index + 1);
+          this.props.fetchQuestion(this.props.index + 1)
+            .then(() => this.setState({ option: 0, timer: 10, timeTaken: 0 }));
         }
       } else {
         this.setState((prevState) => {
